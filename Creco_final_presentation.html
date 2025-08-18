@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRECO Kenya | Fact-Checking Platform Proposal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0a844d;
+            --secondary: #0a844d;
+            --accent: #f39c12;
+            --light: #ecf0f1;
+            --dark: #0a844d;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f1c40f;
+            --info: #3498db;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        .presentation-container {
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Modern slide design */
+        .slide {
+            display: none;
+            padding: 60px 80px;
+            min-height: 100vh;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow-y: auto;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .slide-header {
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 15px;
+            position: relative;
+        }
+
+        .slide-header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: var(--secondary);
+        }
+
+        .slide h1 {
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .slide h2 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .slide h3 {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        /* Content grid with cards */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--accent);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--secondary));
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        /* Stats cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(rgba(10,132,77,255));
+        }
+
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 40px auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50px;
+            right: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--secondary));
+            transform: translateY(-50%);
+        }
+
+        .timeline-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            position: relative;
+            width: calc(50% - 50px);
+        }
+
+        .timeline-item:nth-child(odd) {
+            margin-left: auto;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent);
+            transform: translateY(-50%);
+        }
+
+        .timeline-item:nth-child(odd)::before {
+            left: -60px;
+        }
+
+        .timeline-item:nth-child(even)::before {
+            right: -60px;
+        }
+
+        /* Navigation controls */
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(26,82,118,0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(41,128,185,0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Slide counter */
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Highlight boxes */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(243,156,18,0.1), rgba(41,128,185,0.1));
+            border-left: 4px solid var(--accent);
+            padding: 25px;
+            border-radius: 0 8px 8px 0;
+            margin: 30px 0;
+        }
+
+        /* Tech stack chips */
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .tech-item {
+            background: rgba(41,128,185,0.1);
+            color: var(--primary);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Table styling */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+
+        .data-table th {
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .data-table tr:hover {
+            background: rgba(41,128,185,0.05);
+        }
+
+        /* Logo styling */
+        .logo-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            gap: 20px;
+        }
+
+        .logo-circle {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Carousel Styles */
+        .carousel {
+            position: relative;
+            overflow: hidden;
+            height: 400px;
+        }
+        
+        .carousel-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        .carousel-slide.active {
+            opacity: 1;
+        }
+        
+        .carousel-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .carousel-btn:hover {
+            background: var(--secondary);
+            transform: scale(1.1);
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .dot.active {
+            background: var(--accent);
+            transform: scale(1.2);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 40px 30px;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                width: calc(100% - 80px);
+                margin-left: 80px !important;
+            }
+            
+            .timeline-item::before {
+                left: -50px !important;
+                right: auto !important;
+            }
+
+            .carousel {
+                height: 300px;
+            }
+        }
+        .logo-image {
+    width: 100px; /* Adjust as needed */
+    height: 100px; /* Adjust as needed */
+    border-radius: 120%; /* Makes it circular */
+    object-fit: cover; /* Ensures the image fits well */
+}
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="slide-counter">
+            <i class="fas fa-file-alt"></i>
+            <span id="current-slide">1</span> / <span id="total-slides">15</span>
+        </div>
+
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+    <div class="logo-header">
+        <!-- Replace this with your logo image -->
+        <img src="images/logo.PNG" alt="Your Logo" class="logo-image">
+        <h1 style="border-bottom: none; margin-bottom: 0;">Fact-Checking Platform</h1>
+    </div>
+            <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+                <h2 style="color: var(--secondary); font-weight: 400;">Strengthening Democracy Through Verified Information</h2>
+                <div style="margin: 50px 0;">
+                    <div style="background: rgba(26,82,118,0.05); padding: 30px; border-radius: 10px; display: inline-block;">
+                        <p style="font-size: 1.2rem; margin-bottom: 10px;"><strong>Presented by:</strong> Zedekiah Arnold Dol</p>
+                        <p style="font-size: 1.1rem; color: var(--secondary);">Full-Stack Developer | ICT4D Specialist</p>
+                        <p style="font-size: 1rem; margin-top: 20px; color: var(--dark);"><i class="far fa-calendar-alt"></i> August 19, 2025</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: About Me -->
+       <div class="slide">
+    <div class="slide-header">
+        <h2><i class="fas fa-user-tie" style="margin-right: 15px; color: var(--accent);"></i>About Me</h2>
+        <p>Your Development Partner for CRECO's Mission</p>
+    </div>
+    
+    <div class="content-grid">
+        <div class="card">
+            <div class="card-icon"><i class="fas fa-rocket"></i></div>
+            <h3>5+ Years ICT4D Experience</h3>
+            <ul style="padding-left: 20px;">
+                <li>International Institute of Tropical Agriculture (IITA)</li>
+                <li>International Congress and Convention Association</li>
+                <li>Kobby Technologies - Lead Android Developer</li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <div class="card-icon"><i class="fas fa-bullseye"></i></div>
+            <h3>Mission-Aligned Expertise</h3>
+            <ul style="padding-left: 20px;">
+                <li>M&E Systems for agricultural research</li>
+                <li>Offline-capable mobile apps for rural areas</li>
+                <li>Enterprise software for nonprofits</li>
+                <li>Knowledge management systems</li>
+            </ul>
+        </div>
+    </div>
+    
+    <h3 style="margin-top: 40px;">Technical Stack</h3>
+    <div class="tech-stack">
+        <div class="tech-item"><i class="fab fa-react"></i> React Native</div>
+        <div class="tech-item"><i class="fab fa-node-js"></i> Node.js</div>
+        <div class="tech-item"><i class="fab fa-python"></i> Django/Flask</div>
+        <div class="tech-item"><i class="fas fa-database"></i> PostgreSQL</div>
+        <div class="tech-item"><i class="fab fa-aws"></i> AWS</div>
+        <div class="tech-item"><i class="fas fa-mobile-alt"></i> Android</div>
+        <div class="tech-item"><i class="fab fa-laravel"></i> Laravel</div>
+    </div>
+    
+    <div class="highlight-box" style="margin-top: 30px;">
+        <p style="display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-shield-alt" style="color: var(--accent); font-size: 1.5rem;"></i>
+            <span>Currently pursuing <strong>Cybersecurity Certification</strong> with Cisco Networking Academy</span>
+        </p>
+    </div>
+
+    <!-- New CV Download Button -->
+    <div style="text-align: center; margin-top: 40px;">
+        <a href="https://drive.google.com/file/d/1ktJ85I9EwXbveH419rWMqJ6Bv8epghlk/view?usp=sharing" 
+           target="_blank" 
+           class="btn" 
+           style="text-decoration: none; display: inline-flex; align-items: center; gap: 10px;">
+            <i class="fas fa-download"></i> Download My Full CV
+        </a>
+        <p style="margin-top: 10px; font-size: 0.9rem; color: var(--dark);">
+            (PDF document with complete professional background)
+        </p>
+    </div>
+</div>
+        <!-- Slide 3: Understanding CRECO's Mission -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2><i class="fas fa-bullseye" style="margin-right: 15px; color: var(--accent);"></i>Understanding CRECO's Mission</h2>
+                <p>27 Years of Democratic Leadership (1998-2025)</p>
+            </div>
+            
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-gavel"></i></div>
+                    <h3>Constitutional Awareness</h3>
+                    <p>Educating citizens on their rights and responsibilities under Kenya's constitution</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-hands-helping"></i></div>
+                    <h3>Civic Participation</h3>
+                    <p>Empowering citizens to actively engage in democratic processes</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-network-wired"></i></div>
+                    <h3>Network Coordination</h3>
+                    <p>Coordinating Public Benefit Organizations and Human Rights Defenders</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-balance-scale"></i></div>
+                    <h3>Governance Accountability</h3>
+                    <p>Safeguarding pro-people governance through verified information</p>
+                </div>
+            </div>
+            
+            <div class="highlight-box">
+                <h3 style="color: var(--primary); margin-bottom: 15px;">The Challenge</h3>
+                <p>Misinformation threatens democratic processes, constitutional awareness, and civic participation in Kenya's digital landscape.</p>
+            </div>
+        </div>
+
+        <!-- NEW SLIDE: Linguistic Diversity -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2><i class="fas fa-language" style="margin-right: 15px; color: var(--accent);"></i>Linguistic & Cultural Considerations</h2>
+                <p>Ensuring Accessibility Across Kenya's Diverse Population</p>
+            </div>
+            
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-language"></i></div>
+                    <h3>Multilingual Support</h3>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Initial launch in English and Swahili</li>
+                        <li>Framework for adding regional languages</li>
+                        <li>Cultural sensitivity in content presentation</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-users"></i></div>
+                    <h3>Accessibility Features</h3>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>WCAG 2.1 AA compliance</li>
+                        <li>Text-to-speech integration potential</li>
+                        <li>Low-literacy visual indicators</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="highlight-box">
+                <h3 style="color: var(--primary); margin-bottom: 15px;">Community Engagement</h3>
+                <p>We'll work with CRECO's regional partners to ensure the platform meets local needs and communication styles across all 47 counties.</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: Technical Solution Overview -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2><i class="fas fa-laptop-code" style="margin-right: 15px; color: var(--accent);"></i>Technical Solution Overview</h2>
+                <p>Cross-Platform Architecture for Maximum Impact</p>
+            </div>
+            
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <h3>Mobile Layer</h3>
+                    <p><strong>React Native (Android & iOS)</strong></p>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Offline-capable for rural areas</li>
+                        <li>Real-time notifications</li>
+                        <li>Intuitive UI for diverse users</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-server"></i></div>
+                    <h3>API Layer</h3>
+                    <p><strong>Node.js with Express</strong></p>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>RESTful APIs with documentation</li>
+                        <li>JWT authentication</li>
+                        <li>Role-based access control</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-database"></i></div>
+                    <h3>Database Layer</h3>
+                    <p><strong>PostgreSQL on AWS RDS</strong></p>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Multi-AZ deployment</li>
+                        <li>Automated daily backups</li>
+                        <li>High availability</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-cloud"></i></div>
+                    <h3>Infrastructure</h3>
+                    <p><strong>AWS Cloud</strong></p>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Auto-scaling</li>
+                        <li>CDN for global delivery</li>
+                        <li>Enterprise security</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div style="margin-top: 40px;">
+                <h3>Key Technical Advantages</h3>
+                <div class="tech-stack">
+                    <div class="tech-item"><i class="fas fa-robot"></i> AI Integration</div>
+                    <div class="tech-item"><i class="fas fa-shield-alt"></i> OWASP Security</div>
+                    <div class="tech-item"><i class="fas fa-bolt"></i> Offline Capability</div>
+                    <div class="tech-item"><i class="fas fa-expand"></i> Auto-scaling</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Key Features -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2><i class="fas fa-star" style="margin-right: 15px; color: var(--accent);"></i>Platform Features</h2>
+                <p>Citizen Empowerment Through Technology</p>
+            </div>
+            
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <h3>Mobile App (Android/iOS)</h3>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Simple claim submission with text/images</li>
+                        <li>Real-time verdict notifications</li>
+                        <li>Offline functionality</li>
+                        <li>Search previously verified claims</li>
+                        <li>Social sharing of verified information</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    <h3>Admin Dashboard</h3>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Workflow management for fact-checkers</li>
+                        <li>AI-powered claim categorization</li>
+                        <li>Analytics and reporting tools</li>
+                        <li>User management and permissions</li>
+                        <li>Performance metrics tracking</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div style="margin-top: 40px;">
+                <h3>Verdict System</h3>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px;">
+                    <span style="background: var(--success); color: white; padding: 8px 20px; border-radius: 20px; font-weight: 500;">TRUE</span>
+                    <span style="background: var(--danger); color: white; padding: 8px 20px; border-radius: 20px; font-weight: 500;">FALSE</span>
+                    <span style="background: var(--warning); color: var(--dark); padding: 8px 20px; border-radius: 20px; font-weight: 500;">MISLEADING</span>
+                    <span style="background: var(--info); color: white; padding: 8px 20px; border-radius: 20px; font-weight: 500;">PARTIALLY TRUE</span>
+                    <span style="background: #95a5a6; color: white; padding: 8px 20px; border-radius: 20px; font-weight: 500;">UNVERIFIED</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Relevant Experience -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2><i class="fas fa-briefcase" style="margin-right: 15px; color: var(--accent);"></i>Relevant Project Experience</h2>
+                <p>Proven Track Record in Similar Initiatives</p>
+            </div>
+            
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>STEP M&E System - IITA</h3>
+                    <p><strong>Challenge:</strong> Real-time field data verification</p>
+                    <p><strong>Solution:</strong> ODK integration with custom validation</p>
+                    <p><strong>Impact:</strong> Streamlined research data quality</p>
+                    <p><strong>Relevance:</strong> Similar to fact-checking workflows</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-mobile"></i></div>
+                    <h3>Android Field App - Kobby Tech</h3>
+                    <p><strong>Challenge:</strong> Offline data collection in rural areas</p>
+                    <p><strong>Solution:</strong> Offline-capable Android app with sync</p>
+                    <p><strong>Impact:</strong> Enabled connectivity-independent data collection</p>
+                    <p><strong>Relevance:</strong> Perfect for Kenya's diverse connectivity</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-building"></i></div>
+                    <h3>Enterprise Software - ICCA</h3>
+                    <p><strong>Challenge:</strong> Business-critical nonprofit operations</p>
+                    <p><strong>Solution:</strong> Scalable Django/Flask backend systems</p>
+                    <p><strong>Impact:</strong> Enhanced organizational efficiency</p>
+                    <p><strong>Relevance:</strong> Similar scale and security needs</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-lightbulb"></i></div>
+                    <h3>Knowledge Management - IITA</h3>
+                    <p><strong>Challenge:</strong> Information sharing across teams</p>
+                    <p><strong>Solution:</strong> Internal collaboration platform</p>
+                    <p><strong>Impact:</strong> Improved organizational learning</p>
+                    <p><strong>Relevance:</strong> Training and capacity building</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Akilimo App Carousel -->
+       <!-- Slide 7: Akilimo App Carousel -->
+<div class="slide">
+    <div class="slide-header">
+        <h2><i class="fas fa-mobile-alt" style="margin-right: 15px; color: var(--accent);"></i>Proven Model: Akilimo App Insights</h2>
+        <p>Adapting Agricultural Decision-Support Success to Fact-Checking</p>
+    </div>
+
+    <div class="content-grid">
+        <!-- Text Content -->
+        <div class="card">
+            <div class="card-icon"><i class="fas fa-seedling"></i></div>
+            <h3>Akilimo's Proven Framework</h3>
+            <ul style="margin-top: 10px; padding-left: 20px;">
+                <li><strong>Location-Specific Advice:</strong> Hyper-localized recommendations</li>
+                <li><strong>Data-Driven Predictions:</strong> Yield forecasts with 90%+ accuracy</li>
+                <li><strong>Investment Optimization:</strong> Maximizes farmer ROI</li>
+                <li><strong>Offline Functionality:</strong> 100% rural accessibility</li>
+            </ul>
+        </div>
+        
+        <!-- Carousel Container -->
+        <div class="card" style="padding: 15px; position: relative;">
+            <div class="carousel" id="akilimoCarousel">
+                <!-- Slide 1 -->
+                <div class="carousel-slide active">
+                    <img src="images/SS1.jpg" 
+                         alt="Akilimo Home" 
+                         style="width: 100%; border-radius: 8px; border: 1px solid #eee;">
+                    <p style="text-align: center; margin-top: 10px; font-size: 0.9rem;">
+                        <em>Home Screen - Simple navigation</em>
+                    </p>
+                </div>
+                
+                <!-- Slide 2 -->
+                <div class="carousel-slide">
+                    <img src="images/ss2.jpg" 
+                         alt="Akilimo Recommendations" 
+                         style="width: 100%; border-radius: 8px; border: 1px solid #eee;">
+                    <p style="text-align: center; margin-top: 10px; font-size: 0.9rem;">
+                        <em>Personalized recommendations</em>
+                    </p>
+                </div>
+                
+                <!-- Slide 3 -->
+                <div class="carousel-slide">
+                    <img src="images/ss3.jpg" 
+                         alt="Akilimo Offline" 
+                         style="width: 100%; border-radius: 8px; border: 1px solid #eee;">
+                    <p style="text-align: center; margin-top: 10px; font-size: 0.9rem;">
+                        <em>Offline functionality</em>
+                    </p>
+                </div>
+                <div class="carousel-slide">
+                    <img src="images/ss4.jpg" 
+                         alt="Akilimo Recommendations" 
+                         style="width: 100%; border-radius: 8px; border: 1px solid #eee;">
+                    <p style="text-align: center; margin-top: 10px; font-size: 0.9rem;">
+                        <em>Personalized recommendations</em>
+                    </p>
+                </div>
+                <div class="carousel-slide">
+                    <img src="images/ss5.jpg" 
+                         alt="Akilimo Recommendations" 
+                         style="width: 100%; border-radius: 8px; border: 1px solid #eee;">
+                    <p style="text-align: center; margin-top: 10px; font-size: 0.9rem;">
+                        <em>Personalized recommendations</em>
+                    </p>
+                </div>
+                <div class="carousel-slide">
+                    <img src="images/ss6.jpg" 
+                         alt="Akilimo Recommendations" 
+                         style="width: 100%; border-radius: 8px; border: 1px solid #eee;">
+                    <p style="text-align: center; margin-top: 10px; font-size: 0.9rem;">
+                        <em>Personalized recommendations</em>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Carousel Controls -->
+            <div style="display: flex; justify-content: center; gap: 15px; margin-top: 15px;">
+                <button class="carousel-btn" onclick="prevSlide()">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="carousel-dots" style="display: flex; gap: 8px;">
+                    <span class="dot active" onclick="goToSlide(0)"></span>
+                    <span class="dot" onclick="goToSlide(1)"></span>
+                    <span class="dot" onclick="goToSlide(2)"></span>
+                    <span class="dot" onclick="goToSlide(3)"></span>
+                    <span class="dot" onclick="goToSlide(4)"></span>
+                    <span class="dot" onclick="goToSlide(5)"></span>
+                </div>
+                <button class="carousel-btn" onclick="nextSlide()">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <p style="text-align: center; margin-top: 15px; font-size: 0.9rem; color: var(--secondary);">
+                <i class="fas fa-download"></i> 100K+ downloads across East Africa
+            </p>
+            
+            <!-- Play Store Download Button -->
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="https://play.google.com/store/apps/details?id=com.akilimo.mobile&hl=en" 
+                   target="_blank" 
+                   class="btn" 
+                   style="text-decoration: none; display: inline-flex; align-items: center; gap: 10px;">
+                    <i class="fab fa-google-play"></i> Download on Google Play
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="highlight-box">
+        <h3 style="color: var(--primary); margin-bottom: 15px;">Key Adaptations for CRECO</h3>
+        <ul style="padding-left: 20px;">
+            <li><strong>Visual Verdict System:</strong> Color-coded labels for quick comprehension</li>
+            <li><strong>One-Tap Submission:</strong> Streamlined claim reporting process</li>
+            <li><strong>Accessibility Focus:</strong> WCAG 2.1 AA compliance for inclusive access</li>
+        </ul>
+    </div>
+</div>
+
+        <!-- Slide 8: 10-Week Timeline -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2><i class="fas fa-calendar-alt" style="margin-right: 15px; color: var(--accent);"></i>10-Week Development Timeline</h2>
+                <p>Agile Methodology with Milestone Deliverables</p>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h3>Phase 1: Foundation & Setup</h3>
+                    <p><strong>Weeks 1-2</strong></p>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Infrastructure setup</li>
+                        <li>Design finalization</li>
+                        <li>Requirements analysis</li>
+                    </ul>
+                </div>
+                
+                <div class="timeline-item">
+                    <h3>Phase 2: Core Development</h3>
+                    <p><strong>Weeks 3-5</strong></p>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Mobile app foundation</li>
+                        <li>Backend APIs</li>
+                        <li>Admin dashboard</li>
+                    </ul>
+                </div>
+                
+                <div class="timeline-item">
+                    <h3>Phase 3: Integration & Testing</h3>
+                    <p><strong>Weeks 6-8</strong></p>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>System integration</li>
+                        <li>Security audit</li>
+                        <li>Performance optimization</li>
+                    </ul>
+                </div>
+                
+                <div class="timeline-item">
+                    <h3>Phase 4: Deployment & Training</h3>
+                    <p><strong>Weeks 9-10</strong></p>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Production deployment</li>
+                        <li>Staff training</li>
+                        <li>Project handover</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="content-grid" style="margin-top: 40px;">
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-users"></i></div>
+                    <h3>Team Composition</h3>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Lead Full-Stack Developer</li>
+                        <li>Senior Mobile Developer</li>
+                        <li>Backend/Security Engineer</li>
+                        <li>UI/UX Designer</li>
+                        <li>Project Manager/QA Lead</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-check-double"></i></div>
+                    <h3>Success Metrics</h3>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>100% milestone achievement</li>
+                        <li>90%+ test coverage</li>
+                        <li>OWASP security compliance</li>
+                        <li>100% staff training completion</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Security & Scalability -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2><i class="fas fa-shield-alt" style="margin-right: 15px; color: var(--accent);"></i>Security & Scalability</h2>
+                <p>Enterprise-Grade Protection for Sensitive Data</p>
+            </div>
+            
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-lock"></i></div>
+                    <h3>Security Measures</h3>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>JWT + 2FA (SMS/Email)</li>
+                        <li>End-to-end encryption</li>
+                        <li>OWASP compliance</li>
+                        <li>Professional penetration testing</li>
+                        <li>Role-based access control</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-expand"></i></div>
+                    <h3>Scalability Features</h3>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>AWS auto-scaling</li>
+                        <li>Multi-AZ database deployment</li>
+                        <li>Global CDN</li>
+                         <li>Load balancing</li> 
+                         <li>Real-time monitoring</li> 
+                        </ul> 
+                    </div> 
+                </div>
+                 <div class="highlight-box" style="margin-top: 30px;">
+            <h3 style="color: var(--primary); margin-bottom: 15px;">My Security Credentials</h3>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <div style="flex: 1;">
+                    <p><i class="fas fa-certificate" style="color: var(--accent);"></i> Currently pursuing <strong>Cybersecurity Certification</strong> with Cisco</p>
+                    <p><i class="fas fa-building" style="color: var(--accent);"></i> Enterprise security experience at ICCA</p>
+                </div>
+                <img src="https://www.netacad.com/sites/default/files/2021-03/cisco-networking-academy-logo.png" 
+                     style="height: 60px; filter: grayscale(100%) brightness(0.5); opacity: 0.8;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 10: Risk Management -->
+    <div class="slide">
+        <div class="slide-header">
+            <h2><i class="fas fa-exclamation-triangle" style="margin-right: 15px; color: var(--accent);"></i>Risk Management</h2>
+            <p>Proactive Planning for Project Success</p>
+        </div>
+        
+        <div class="content-grid">
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-server"></i></div>
+                <h3>Technical Risks</h3>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li><strong>Mitigation:</strong> Multiple API providers + fallback mechanisms</li>
+                    <li><strong>Data Protection:</strong> Daily backups with 30-day retention</li>
+                    <li><strong>Uptime:</strong> Auto-scaling architecture for traffic surges</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-project-diagram"></i></div>
+                <h3>Project Risks</h3>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li><strong>Scope Control:</strong> Clear change procedures</li>
+                    <li><strong>Timeline:</strong> Buffer allocations in schedule</li>
+                    <li><strong>Quality:</strong> Continuous testing throughout</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-life-ring"></i></div>
+                <h3>Post-Launch Support</h3>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li><strong>First 30 Days:</strong> 24/7 support (KES 180K/month)</li>
+                    <li><strong>Months 2-12:</strong> 15 hrs/month developer assistance</li>
+                    <li><strong>Long-term:</strong> Handover to CRECO technical staff</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <h3>Sustainability Strategy</h3>
+            <div class="tech-stack">
+                <div class="tech-item"><i class="fas fa-hand-holding-usd"></i> Grant Funding</div>
+                <div class="tech-item"><i class="fas fa-code"></i> API Monetization</div>
+                <div class="tech-item"><i class="fas fa-graduation-cap"></i> Continuous Training</div>
+                <div class="tech-item"><i class="fas fa-users-cog"></i> In-house Capacity</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 11: Budget -->
+    <div class="slide">
+        <div class="slide-header">
+            <h2><i class="fas fa-money-bill-wave" style="margin-right: 15px; color: var(--accent);"></i>Investment & Value</h2>
+            <p>Transparent Budget Allocation</p>
+        </div>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <div style="background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; padding: 30px; border-radius: 15px; display: inline-block; box-shadow: 0 10px 30px rgba(41,128,185,0.3);">
+                <h3 style="margin-bottom: 15px;">Total Investment</h3>
+                <p style="font-size: 3rem; font-weight: 700; margin: 10px 0;">KES 2,200,000</p>
+                <p style="font-size: 1.1rem;">(Net after 5% Withholding Tax)</p>
+            </div>
+        </div>
+        
+        <div class="content-grid">
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-users"></i></div>
+                <h3>Human Resources</h3>
+                <p style="font-size: 2rem; color: var(--primary); margin: 15px 0;">82.3%</p>
+                <p>Specialized technical team (5 experts for 10 weeks)</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-server"></i></div>
+                <h3>Technology & Infrastructure</h3>
+                <p style="font-size: 2rem; color: var(--primary); margin: 15px 0;">12.7%</p>
+                <p>AWS cloud, development tools, and deployment</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-robot"></i></div>
+                <h3>External Services</h3>
+                <p style="font-size: 2rem; color: var(--primary); margin: 15px 0;">5.0%</p>
+                <p>AI integration, security audit, and communications</p>
+            </div>
+        </div>
+        
+        <div style="margin-top: 40px;">
+            <h3>Milestone Payment Schedule</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Milestone</th>
+                        <th>Percentage</th>
+                        <th>Net Amount (KES)</th>
+                        <th>Timeline</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Contract Signing</td>
+                        <td>30%</td>
+                        <td>660,000</td>
+                        <td>Week 1</td>
+                    </tr>
+                    <tr>
+                        <td>Core Development Complete</td>
+                        <td>35%</td>
+                        <td>770,000</td>
+                        <td>Week 5</td>
+                    </tr>
+                    <tr>
+                        <td>Testing & Integration</td>
+                        <td>25%</td>
+                        <td>550,000</td>
+                        <td>Week 8</td>
+                    </tr>
+                    <tr>
+                        <td>Final Delivery</td>
+                        <td>10%</td>
+                        <td>220,000</td>
+                        <td>Week 10</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Slide 12: Expected Impact -->
+    <div class="slide">
+        <div class="slide-header">
+            <h2><i class="fas fa-chart-line" style="margin-right: 15px; color: var(--accent);"></i>Expected Impact</h2>
+            <p>Strengthening Kenya's Democratic Resilience</p>
+        </div>
+        
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number">2,000+</div>
+                <p>Monthly Claims Processed</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">15,000+</div>
+                <p>App Downloads (6 Months)</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">70%</div>
+                <p>Faster Response Time</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">47</div>
+                <p>Counties Reached</p>
+            </div>
+        </div>
+        
+        <div class="content-grid">
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-bullseye"></i></div>
+                <h3>6-Month Goals</h3>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>Establish CRECO as trusted fact-checking authority</li>
+                    <li>95% user satisfaction with verified information</li>
+                    <li>50% increase in fact-checking capacity</li>
+                    <li>Integration with 10+ media partners</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-globe-africa"></i></div>
+                <h3>Long-term Vision</h3>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>100,000+ citizens educated</li>
+                    <li>Enhanced constitutional awareness</li>
+                    <li>Policy influence through data</li>
+                    <li>Stronger democratic resilience</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="highlight-box" style="margin-top: 30px;">
+            <h3 style="color: var(--primary); margin-bottom: 15px;">Alignment with CRECO's Mission</h3>
+            <p>This platform directly supports CRECO's 27-year legacy of promoting civic participation, constitutional awareness, and governance accountability through technological innovation.</p>
+        </div>
+    </div>
+
+    <!-- Slide 13: Training Program -->
+    <div class="slide">
+        <div class="slide-header">
+            <h2><i class="fas fa-graduation-cap" style="margin-right: 15px; color: var(--accent);"></i>Training Program</h2>
+            <p>Empowering CRECO's Team for Long-term Success</p>
+        </div>
+        
+        <div style="margin: 30px 0;">
+            <h3>5-Day Comprehensive Training Schedule</h3>
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-book-open"></i></div>
+                    <h4>Day 1: Platform Introduction</h4>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>System navigation</li>
+                        <li>Account management</li>
+                        <li>Security best practices</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-tasks"></i></div>
+                    <h4>Day 2: Claim Management</h4>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Submission procedures</li>
+                        <li>Tagging system</li>
+                        <li>Workflow optimization</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-search"></i></div>
+                    <h4>Day 3: Fact-Checking Methods</h4>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Verification techniques</li>
+                        <li>Source validation</li>
+                        <li>Verdict classification</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-chart-bar"></i></div>
+                    <h4>Day 4: Analytics & Reporting</h4>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Dashboard interpretation</li>
+                        <li>Trend analysis</li>
+                        <li>Report generation</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-cogs"></i></div>
+                    <h4>Day 5: Administration</h4>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>User management</li>
+                        <li>System maintenance</li>
+                        <li>Support procedures</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="highlight-box">
+            <h3 style="color: var(--primary); margin-bottom: 15px;">Training Deliverables</h3>
+            <div class="tech-stack">
+                <div class="tech-item"><i class="fas fa-video"></i> Video Tutorials</div>
+                <div class="tech-item"><i class="fas fa-book"></i> User Manuals</div>
+                <div class="tech-item"><i class="fas fa-file-alt"></i> Quick Guides</div>
+                <div class="tech-item"><i class="fas fa-question-circle"></i> Troubleshooting Docs</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW SLIDE: Q&A Preparation -->
+    <div class="slide">
+        <div class="slide-header">
+            <h2><i class="fas fa-question-circle" style="margin-right: 15px; color: var(--accent);"></i>Anticipated Questions</h2>
+            <p>Prepared for Your Concerns</p>
+        </div>
+        
+        <div class="content-grid">
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-language"></i></div>
+                <h3>Linguistic Diversity</h3>
+                <p>How will you ensure the app handles Kenya's linguistic diversity?</p>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>Initial English/Swahili support with framework for regional languages</li>
+                    <li>Visual communication for low-literacy users</li>
+                    <li>Collaboration with CRECO's regional partners</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>Platform Security</h3>
+                <p>What measures prevent misuse or manipulation of the platform?</p>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>Strict verification workflows with audit trails</li>
+                    <li>Role-based access controls</li>
+                    <li>Professional penetration testing</li>
+                    <li>Automated duplicate detection</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-users"></i></div>
+                <h3>Team Continuity</h3>
+                <p>What happens if key team members become unavailable?</p>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>Cross-trained team members</li>
+                    <li>Comprehensive documentation</li>
+                    <li>Backup developers on retainer</li>
+                    <li>Knowledge transfer throughout project</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                <h3>Training Approach</h3>
+                <p>How will you train non-technical CRECO staff?</p>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>Hands-on workshops with real scenarios</li>
+                    <li>Step-by-step video tutorials</li>
+                    <li>Role-specific quick reference guides</li>
+                    <li>Post-training support sessions</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 14: Next Steps -->
+    <div class="slide">
+        <div class="slide-header">
+            <h2><i class="fas fa-arrow-right" style="margin-right: 15px; color: var(--accent);"></i>Next Steps</h2>
+            <p>Let's Build Kenya's Fact-Checking Future Together</p>
+        </div>
+        
+        <div class="content-grid">
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-clipboard-check"></i></div>
+                <h3>Immediate Actions</h3>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>Contract finalization</li>
+                    <li>Project kickoff meeting</li>
+                    <li>Team mobilization</li>
+                    <li>Week 1 requirements gathering</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-calendar-check"></i></div>
+                <h3>Timeline</h3>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li><strong>Start:</strong> Within 7 days of approval</li>
+                    <li><strong>First Milestone:</strong> Week 2</li>
+                    <li><strong>Go-Live:</strong> Week 10</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card" style="max-width: 800px; margin: 40px auto; text-align: center;">
+            <div class="card-icon"><i class="fas fa-envelope"></i></div>
+            <h3>Contact Information</h3>
+            <div style="font-size: 1.2rem; margin: 20px 0;">
+                <p><strong>Zedekiah Arnold Dol</strong></p>
+                <p><i class="fas fa-envelope"></i> zedekiadol@gmail.com</p>
+                <p><i class="fas fa-phone"></i> +254 705 306 628</p>
+                <div style="display: flex; justify-content: center; gap: 20px; margin-top: 15px;">
+                    <span><i class="fab fa-linkedin"></i> LinkedIn</span>
+                    <span><i class="fab fa-github"></i> GitHub</span>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 40px;">
+            <div style="background: linear-gradient(135deg, var(--accent), var(--secondary)); color: white; padding: 20px; border-radius: 10px; display: inline-block;">
+                <p style="font-size: 1.3rem; font-weight: 500;">
+                    <i class="fas fa-quote-left" style="opacity: 0.7;"></i> 
+                    A well-informed citizenry is the foundation of democracy
+                    <i class="fas fa-quote-right" style="opacity: 0.7;"></i>
+                </p>
+            </div>
+            <p style="margin-top: 20px; font-size: 1.1rem;">Let's strengthen Kenya's democratic future together!</p>
+        </div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="controls">
+        <button class="btn btn-outline" id="prevBtn"><i class="fas fa-arrow-left"></i> Previous</button>
+        <button class="btn" id="nextBtn">Next <i class="fas fa-arrow-right"></i></button>
+    </div>
+</div>
+
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    // Update slide counter
+    document.getElementById('total-slides').textContent = totalSlides;
+    updateCounter();
+
+    function showSlide(n) {
+        slides.forEach(slide => slide.classList.remove('active'));
+        currentSlide = (n + totalSlides) % totalSlides;
+        slides[currentSlide].classList.add('active');
+        updateCounter();
+    }
+
+    function updateCounter() {
+        document.getElementById('current-slide').textContent = currentSlide + 1;
+    }
+
+    // Event listeners for buttons
+    prevBtn.addEventListener('click', () => {
+        showSlide(currentSlide - 1);
+    });
+
+    nextBtn.addEventListener('click', () => {
+        showSlide(currentSlide + 1);
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+            showSlide(currentSlide - 1);
+        } else if (e.key === 'ArrowRight') {
+            showSlide(currentSlide + 1);
+        }
+    });
+
+    // Carousel functionality
+    let currentCarouselSlide = 0;
+    const carouselSlides = document.querySelectorAll('#akilimoCarousel .carousel-slide');
+    const dots = document.querySelectorAll('.carousel-dots .dot');
+    
+    function updateCarousel() {
+        carouselSlides.forEach((slide, index) => {
+            slide.classList.toggle('active', index === currentCarouselSlide);
+        });
+        
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentCarouselSlide);
+        });
+    }
+    
+    function nextCarouselSlide() {
+        currentCarouselSlide = (currentCarouselSlide + 1) % carouselSlides.length;
+        updateCarousel();
+    }
+    
+    function prevCarouselSlide() {
+        currentCarouselSlide = (currentCarouselSlide - 1 + carouselSlides.length) % carouselSlides.length;
+        updateCarousel();
+    }
+    
+    function goToSlide(index) {
+        currentCarouselSlide = index;
+        updateCarousel();
+    }
+    
+    // Auto-advance every 5 seconds (optional)
+    setInterval(nextCarouselSlide, 5000);
+</script>
+</body>
+</html>
