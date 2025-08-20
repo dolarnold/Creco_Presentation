@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How CRECO App Works - Simple Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .slide-container {
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 1400px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, #2E8B57, #3CB371, #228B22, #32CD32);
+        }
+
+        .slide-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .slide-title {
+            font-size: 3.2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #2E8B57, #3CB371);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .slide-subtitle {
+            font-size: 1.5rem;
+            color: #666;
+            font-weight: 400;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .app-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            padding: 30px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flow-step:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        .flow-step:nth-child(even) {
+            flex-direction: row-reverse;
+            background: linear-gradient(135deg, #e8f5e8, #f0fff0);
+        }
+
+        .flow-step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(46, 139, 87, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .flow-step:hover::before {
+            opacity: 1;
+        }
+
+        .step-number {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #2E8B57;
+            background: rgba(46, 139, 87, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step-visual {
+            flex: 0 0 200px;
+            height: 160px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            background: linear-gradient(45deg, #2E8B57, #3CB371);
+            color: white;
+            box-shadow: 0 20px 40px rgba(46, 139, 87, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-visual::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: rotate 4s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .visual-label {
+            font-size: 0.9rem;
+            margin-top: 10px;
+            font-weight: 600;
+            opacity: 0.9;
+            text-align: center;
+        }
+
+        .step-content {
+            flex: 1;
+            padding: 0 25px;
+        }
+
+        .content-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .content-description {
+            font-size: 1.1rem;
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        .content-example {
+            background: rgba(46, 139, 87, 0.1);
+            padding: 15px 20px;
+            border-radius: 12px;
+            border-left: 5px solid #2E8B57;
+            font-style: italic;
+            color: #2E8B57;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .content-example::before {
+            content: '💡';
+            position: absolute;
+            left: -2px;
+            top: -2px;
+            font-size: 1.2rem;
+        }
+
+        .connection-arrow {
+            display: flex;
+            justify-content: center;
+            margin: -20px 0;
+            z-index: 10;
+        }
+
+        .arrow {
+            font-size: 3rem;
+            color: #2E8B57;
+            animation: bounce 2s infinite;
+            text-shadow: 0 8px 20px rgba(46, 139, 87, 0.3);
+            filter: drop-shadow(0 4px 8px rgba(46, 139, 87, 0.2));
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { 
+                transform: translateY(0) scale(1); 
+            }
+            40% { 
+                transform: translateY(-12px) scale(1.1); 
+            }
+            60% { 
+                transform: translateY(-6px) scale(1.05); 
+            }
+        }
+
+        .impact-section {
+            margin-top: 60px;
+            padding: 50px;
+            background: linear-gradient(135deg, #2E8B57, #3CB371);
+            color: white;
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(46, 139, 87, 0.3);
+            text-align: center;
+        }
+
+        .impact-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .impact-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .benefit-card {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 25px;
+            border-radius: 18px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .benefit-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            display: block;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .benefit-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .benefit-description {
+            opacity: 0.9;
+            line-height: 1.5;
+            font-size: 1rem;
+        }
+
+        /* Interactive mouse tracking */
+        .flow-step {
+            cursor: pointer;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .flow-step {
+                flex-direction: column !important;
+                text-align: center;
+                padding: 25px 20px;
+            }
+            
+            .step-visual {
+                flex: none;
+                width: 150px;
+                height: 120px;
+                font-size: 3rem;
+            }
+            
+            .slide-title {
+                font-size: 2.4rem;
+            }
+            
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .step-content {
+                padding: 15px 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slide-container {
+                padding: 25px;
+            }
+
+            .impact-section {
+                padding: 30px 20px;
+            }
+
+            .impact-title {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="slide-header">
+            <h1 class="slide-title">📱 How CRECO App Works</h1>
+            <p class="slide-subtitle">Kenya's Smart Fact-Checking Platform - Turning Every Citizen into a Truth Guardian</p>
+        </div>
+
+        <div class="app-flow">
+            <!-- Step 1: Citizen Sees Suspicious Info -->
+            <div class="flow-step">
+                <div class="step-number">1</div>
+                <div class="step-visual">
+                    🤔📱
+                    <div class="visual-label">Citizen Alert</div>
+                </div>
+                <div class="step-content">
+                    <h3 class="content-title">🚨 You See Something That Doesn't Look Right</h3>
+                    <p class="content-description">
+                        You're scrolling through WhatsApp, Facebook, or watching news and come across information that makes you wonder: "Is this actually true?" Maybe it's about elections, COVID-19, government policies, or anything affecting Kenya.
+                    </p>
+                    <div class="content-example">
+                        Example: "I heard polling stations are closing early" or "New COVID restrictions starting tomorrow" - but you're not sure if it's real
+                    </div>
+                </div>
+            </div>
+
+            <div class="connection-arrow">
+                <div class="arrow">⬇️</div>
+            </div>
+
+            <!-- Step 2: Easy Reporting -->
+            <div class="flow-step">
+                <div class="step-number">2</div>
+                <div class="step-visual">
+                    📸✨
+                    <div class="visual-label">Quick Report</div>
+                </div>
+                <div class="step-content">
+                    <h3 class="content-title">📲 Report It in Seconds</h3>
+                    <p class="content-description">
+                        Open the CRECO app on your phone, take a screenshot or type the suspicious claim, add where you saw it (optional), and hit send. The whole process takes less than 30 seconds. You can even report anonymously if you prefer!
+                    </p>
+                    <div class="content-example">
+                        Just like taking a photo and sending it to a friend - but you're sending it to professional fact-checkers instead
+                    </div>
+                </div>
+            </div>
+
+            <div class="connection-arrow">
+                <div class="arrow">⬇️</div>
+            </div>
+
+            <!-- Step 3: Smart Sorting -->
+            <div class="flow-step">
+                <div class="step-number">3</div>
+                <div class="step-visual">
+                    🤖⚡
+                    <div class="visual-label">AI Assistant</div>
+                </div>
+                <div class="step-content">
+                    <h3 class="content-title">🧠 Smart System Organizes Everything</h3>
+                    <p class="content-description">
+                        Behind the scenes, our intelligent system reads your submission and automatically sorts it. It knows if it's about health, politics, or breaking news. It also checks if someone else has already reported the same thing and decides how urgent it is.
+                    </p>
+                    <div class="content-example">
+                        Think of it as a super-smart receptionist who instantly knows which doctor you need to see and how urgent your case is
+                    </div>
+                </div>
+            </div>
+
+            <div class="connection-arrow">
+                <div class="arrow">⬇️</div>
+            </div>
+
+            <!-- Step 4: Expert Review -->
+            <div class="flow-step">
+                <div class="step-number">4</div>
+                <div class="step-visual">
+                    🕵️‍♂️📋
+                    <div class="visual-label">Professional Check</div>
+                </div>
+                <div class="step-content">
+                    <h3 class="content-title">🔍 CRECO Experts Investigate Like Detectives</h3>
+                    <p class="content-description">
+                        Professional fact-checkers receive your claim on their organized dashboard. They contact original sources, check with government offices, interview experts, and follow strict journalism standards to determine what's true or false.
+                    </p>
+                    <div class="content-example">
+                        Like professional detectives: they don't guess - they find evidence, call witnesses, and verify facts before giving you an answer
+                    </div>
+                </div>
+            </div>
+
+            <div class="connection-arrow">
+                <div class="arrow">⬇️</div>
+            </div>
+
+            <!-- Step 5: Secure Storage -->
+            <div class="flow-step">
+                <div class="step-number">5</div>
+                <div class="step-visual">
+                    🏛️💾
+                    <div class="visual-label">Truth Database</div>
+                </div>
+                <div class="step-content">
+                    <h3 class="content-title">📚 Everything Saved in Digital Truth Library</h3>
+                    <p class="content-description">
+                        All verified information is safely stored in a digital library that works like Kenya's National Archives - but for facts! This creates a permanent, searchable database of verified information that grows stronger over time.
+                    </p>
+                    <div class="content-example">
+                        Future Kenyans can search "What did CRECO verify about 2025 elections?" and find all the facts in one place
+                    </div>
+                </div>
+            </div>
+
+            <div class="connection-arrow">
+                <div class="arrow">⬇️</div>
+            </div>
+
+            <!-- Step 6: Results Delivered -->
+            <div class="flow-step">
+                <div class="step-number">6</div>
+                <div class="step-visual">
+                    ✅📢
+                    <div class="visual-label">Truth Delivered</div>
+                </div>
+                <div class="step-content">
+                    <h3 class="content-title">🎯 Get Clear, Trustworthy Answers</h3>
+                    <p class="content-description">
+                        You receive a notification with a clear verdict: TRUE ✅, FALSE ❌, PARTIALLY TRUE ⚠️, or NEEDS MORE INFO 🔄. Each answer includes simple explanations, shows the evidence, and is written in plain language anyone can understand.
+                    </p>
+                    <div class="content-example">
+                        "VERDICT: FALSE - Polling stations close at 5 PM nationwide, not 3 PM. Source: Official IEBC statement dated [date]"
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="impact-section">
+            <h2 class="impact-title">🇰🇪 The Result: A More Informed Kenya</h2>
+            <p class="impact-subtitle">
+                When citizens, technology, and professional fact-checkers work together, truth wins over rumors and Kenya makes better decisions based on facts, not fiction.
+            </p>
+
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <span class="benefit-icon">⚡</span>
+                    <h4 class="benefit-title">Lightning Fast</h4>
+                    <p class="benefit-description">Get verified answers in hours, not days or weeks</p>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">🛡️</span>
+                    <h4 class="benefit-title">Completely Safe</h4>
+                    <p class="benefit-description">Your privacy protected, report anonymously if you want</p>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">📱</span>
+                    <h4 class="benefit-title">Super Simple</h4>
+                    <p class="benefit-description">Easier than sending a text message or posting on social media</p>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">🎓</span>
+                    <h4 class="benefit-title">Expert Quality</h4>
+                    <p class="benefit-description">Professional journalists ensure every answer is accurate</p>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">🌍</span>
+                    <h4 class="benefit-title">Serves All Kenya</h4>
+                    <p class="benefit-description">Works in all 47 counties, supports multiple languages</p>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">💪</span>
+                    <h4 class="benefit-title">Builds Democracy</h4>
+                    <p class="benefit-description">Stronger democracy through informed citizens</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add entrance animations
+        window.addEventListener('load', function() {
+            const steps = document.querySelectorAll('.flow-step');
+            
+            steps.forEach((step, index) => {
+                step.style.opacity = '0';
+                step.style.transform = 'translateY(50px)';
+                
+                setTimeout(() => {
+                    step.style.transition = 'all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1)';
+                    step.style.opacity = '1';
+                    step.style.transform = 'translateY(0)';
+                }, index * 300);
+            });
+        });
+
+        // Add mouse tracking effect
+        document.querySelectorAll('.flow-step').forEach(step => {
+            step.addEventListener('mousemove', (e) => {
+                const rect = step.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                
+                step.style.setProperty('--x', x + '%');
+                step.style.setProperty('--y', y + '%');
+            });
+        });
+
+        // Add click effects
+        document.querySelectorAll('.flow-step').forEach(step => {
+            step.addEventListener('click', function() {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // Add floating animation to benefit cards
+        document.querySelectorAll('.benefit-card').forEach((card, index) => {
+            card.style.animation = `float 4s ease-in-out infinite ${index * 0.5}s`;
+        });
+
+        // Add floating animation CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                0%, 100% { transform: translateY(0px); }
+                50% { transform: translateY(-8px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

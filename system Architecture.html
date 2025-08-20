@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRECO System Architecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e7241 0%, #238f47 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .slide-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            padding: 40px;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .slide-header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 4px solid #2E8B57;
+            padding-bottom: 20px;
+        }
+
+        .slide-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #2E8B57;
+            margin-bottom: 10px;
+        }
+
+        .slide-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .architecture-container {
+            display: grid;
+            grid-template-rows: auto auto auto auto;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        /* Layer Styles */
+        .layer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 20px;
+            border-radius: 15px;
+            min-height: 120px;
+        }
+
+        .user-layer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .gateway-layer {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #333;
+        }
+
+        .infrastructure-layer {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #333;
+        }
+
+        .data-layer {
+            background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%);
+            color: #333;
+        }
+
+        .layer-title {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            opacity: 0.8;
+        }
+
+        .components-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .component {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 15px 20px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            min-width: 140px;
+            color: #333;
+            border: 2px solid transparent;
+        }
+
+        .component:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            border-color: #2E8B57;
+        }
+
+        .component-icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Connection Lines */
+        .connection-line {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: -15px 0;
+            z-index: 10;
+        }
+
+        .arrow-down {
+            font-size: 2rem;
+            color: #2E8B57;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* External Services */
+        .external-services {
+            position: absolute;
+            left: -150px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .external-service {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            min-width: 120px;
+        }
+
+        /* AI Integration */
+        .ai-integration {
+            position: absolute;
+            right: -150px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(45deg, #4834d4, #686de0);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            font-weight: 700;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            min-width: 140px;
+        }
+
+        .ai-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* Info Box */
+        .info-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            border-left: 6px solid #2E8B57;
+        }
+
+        .info-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2E8B57;
+            margin-bottom: 15px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .info-icon {
+            font-size: 1.2rem;
+            margin-top: 2px;
+        }
+
+        .info-content {
+            flex: 1;
+        }
+
+        .info-content strong {
+            color: #2E8B57;
+            font-weight: 600;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .external-services, .ai-integration {
+                position: static;
+                transform: none;
+                margin: 20px auto;
+            }
+
+            .infrastructure-layer {
+                position: relative;
+                padding: 40px 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .slide-container {
+                padding: 20px;
+            }
+            
+            .slide-title {
+                font-size: 2.2rem;
+            }
+            
+            .component {
+                min-width: 120px;
+                font-size: 0.8rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="slide-header">
+            <h1 class="slide-title">🏗️ CRECO System Architecture</h1>
+            <p class="slide-subtitle">Mobile Enterprise -Grade  Fact-Checking Platform Infrastructure</p>
+        </div>
+
+        <div class="architecture-container">
+            <!-- User Interface Layer -->
+            <div class="layer user-layer">
+                <div class="layer-title">User Interface Layer</div>
+                <div class="components-container">
+                    <div class="component">
+                        <span class="component-icon">📱</span>
+                        Mobile App<br>
+                        <small>Android & iOS</small>
+                    </div>
+                    <div class="component">
+                        <span class="component-icon">🖥️</span>
+                        Admin Dashboard<br>
+                        <small>Web Interface</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="connection-line">
+                <div class="arrow-down">⬇️</div>
+            </div>
+
+            <!-- API Gateway Layer -->
+            <div class="layer gateway-layer">
+                <div class="layer-title">Security Gateway</div>
+                <div class="components-container">
+                    <div class="component">
+                        <span class="component-icon">🔐</span>
+                        API Gateway<br>
+                        <small>HTTPS/SSL</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="connection-line">
+                <div class="arrow-down">⬇️</div>
+            </div>
+
+            <!-- Cloud Infrastructure Layer -->
+            <div class="layer infrastructure-layer">
+                <div class="layer-title">Cloud Infrastructure (AWS)</div>
+                <div class="components-container">
+                    <div class="component">
+                        <span class="component-icon">⚖️</span>
+                        Load Balancer
+                    </div>
+                    <div class="component">
+                        <span class="component-icon">🔄</span>
+                        Auto Scaling<br>Groups
+                    </div>
+                    <div class="component">
+                        <span class="component-icon">🔔</span>
+                        Notification<br>Service
+                    </div>
+                    <div class="component">
+                        <span class="component-icon">👤</span>
+                        Authentication<br>OAuth/2FA
+                    </div>
+                    <div class="component">
+                        <span class="component-icon">📝</span>
+                        Claim Submission<br>Service
+                    </div>
+                    <div class="component">
+                        <span class="component-icon">✅</span>
+                        Verification<br>Service
+                    </div>
+                </div>
+
+                <!-- External Services -->
+                <div class="external-services">
+                    <div class="external-service">
+                        <span class="component-icon">📧</span>
+                        Email Service
+                    </div>
+                    <div class="external-service">
+                        <span class="component-icon">📱</span>
+                        Push Notifications
+                    </div>
+                </div>
+
+                <!-- AI Integration -->
+                <div class="ai-integration">
+                    <span class="ai-icon">🤖</span>
+                    AI Fact-Check<br>
+                    API Integration
+                </div>
+            </div>
+
+            <div class="connection-line">
+                <div class="arrow-down">⬇️</div>
+            </div>
+
+            <!-- Data Layer -->
+            <div class="layer data-layer">
+                <div class="layer-title">Data Layer</div>
+                <div class="components-container">
+                    <div class="component">
+                        <span class="component-icon">📊</span>
+                        Monitoring &<br>Analytics
+                    </div>
+                    <div class="component">
+                        <span class="component-icon">🗄️</span>
+                        PostgreSQL Database<br>
+                        <small>Claims & Verdicts</small>
+                    </div>
+                    <div class="component">
+                        <span class="component-icon">📁</span>
+                        File Storage<br>
+                        <small>Images & Media</small>
+                    </div>
+                    <div class="component">
+                        <span class="component-icon">⚡</span>
+                        Redis Cache<br>
+                        <small>Session & Performance</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3 class="info-title">🎯 Architecture Benefits for CRECO</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-icon">🛡️</span>
+                    <div class="info-content">
+                        <strong>Enterprise Security:</strong> Multi-layer protection with HTTPS/SSL, OAuth 2.0, and Two-Factor Authentication ensuring government-grade security for sensitive fact-checking data.
+                    </div>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">📈</span>
+                    <div class="info-content">
+                        <strong>Auto-Scaling Performance:</strong> AWS infrastructure automatically handles traffic spikes during elections or breaking news, ensuring 99.9% uptime when citizens need verified information most.
+                    </div>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">🤖</span>
+                    <div class="info-content">
+                        <strong>AI-Powered Efficiency:</strong> Automated claim categorization, duplicate detection, and priority assignment reduces manual work by 50%, letting fact-checkers focus on verification.
+                    </div>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">📊</span>
+                    <div class="info-content">
+                        <strong>Real-Time Analytics:</strong> Comprehensive monitoring and analytics provide CRECO leadership with insights on misinformation trends and platform performance.
+                    </div>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">🔄</span>
+                    <div class="info-content">
+                        <strong>Seamless Integration:</strong> All components work together seamlessly - from citizen submission to verified publication - ensuring smooth fact-checking workflows.
+                    </div>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">💾</span>
+                    <div class="info-content">
+                        <strong>Data Integrity:</strong> PostgreSQL database with automated backups, Redis caching for speed, and secure file storage protect CRECO's valuable fact-checking knowledge base.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add interactive hover effects
+        document.querySelectorAll('.component').forEach(component => {
+            component.addEventListener('mouseenter', function() {
+                this.style.background = 'linear-gradient(45deg, #2E8B57, #3CB371)';
+                this.style.color = 'white';
+                this.style.transform = 'translateY(-5px) scale(1.05)';
+            });
+            
+            component.addEventListener('mouseleave', function() {
+                this.style.background = 'rgba(255, 255, 255, 0.9)';
+                this.style.color = '#333';
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Add fade-in animation
+        window.addEventListener('load', function() {
+            const layers = document.querySelectorAll('.layer');
+            layers.forEach((layer, index) => {
+                layer.style.opacity = '0';
+                layer.style.transform = 'translateY(50px)';
+                
+                setTimeout(() => {
+                    layer.style.transition = 'all 0.6s ease';
+                    layer.style.opacity = '1';
+                    layer.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+
+        // Add click animations for components
+        document.querySelectorAll('.component').forEach(component => {
+            component.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>
